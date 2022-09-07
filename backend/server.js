@@ -34,7 +34,7 @@ app.use(passport.session());
 require("./passportConfig")(passport);
 
 //--------------------------------------ROUTES-----------------------------------------------------------------------
-//Routes
+
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;

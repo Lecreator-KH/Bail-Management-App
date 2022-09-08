@@ -39,6 +39,7 @@ code {
 /* side panel menu */
 /* ---------------------------------------------------------------------------------- */
 /* The sidepanel menu */
+
 .sidepanel {
   height: 100vh; /* Specify a height */
   width: 0; /* 0 width - change this with JavaScript */

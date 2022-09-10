@@ -9,6 +9,7 @@ function App() {
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [data, setData] = useState(null);
+  const [userID, setUserID] = useState(null)
 
   const register = () => {
     axios({
@@ -35,13 +36,17 @@ function App() {
       url: "http://localhost:5000/login",
     })
       .then((res) => {
-        console.log(res)
-        if(res.data == "successfully authenticated"){
+        if(res.data.success == "true"){
+          setID(res.data.userID)
           getUser()
         }
       })
       .catch((e) => console.error(e));
   };
+  const setID = (id) => {
+    setUserID(id)
+  }
+
   const getUser = () => {
     axios({
       method: "GET",
@@ -50,7 +55,6 @@ function App() {
     })
       .then((res) => {
         setData(res.data.username);
-        console.log(res);
       })
       .catch((e) => console.error(e));
   };
@@ -75,7 +79,7 @@ function App() {
       {
         data ? 
         //<h1>Welcome Back {data}</h1> 
-        <Map />
+        <Map user={userID}/>
         :       
         <div>
           <h1>Login</h1>

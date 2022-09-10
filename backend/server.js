@@ -42,8 +42,8 @@ app.post("/login", (req, res, next) => {
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
-        res.send("successfully authenticated");
-        console.log(req.user);
+
+        res.json({ success: "true", userID: user.rows[0].user_id });
       });
     }
   })(req, res, next);
@@ -67,7 +67,27 @@ app.post("/register", async (req, res) => {
     console.error(err.message);
   }
 });
+app.post("/logCheck", async (req, res) => {
+  try{
+      await pool.query(
+        `INSERT INTO bailchecks(officerid,persononbailid,checktime,personpresent) VALUES($1,$2, $3, $4)`,
+        [req.body.officerid, req.body.persononbailid,req.body.checktime,req.body.personpresent]
+      );
+      res.send("Log added");
+  }catch(err){
+    console.error(err.Message)
+  }
+})
+app.get("/getPersonsOnBail", async (req, res) => {
+  try{
+      const people = await pool.query(`SELECT * FROM peopleonbail`);
+      res.send(people.rows);
+  }catch(err){
+    console.error(err.Message)
+  }
+})
 app.get("/getUser", (req, res) => {
+  console.log(req)
   res.send(req.user);
 });
 app.listen(5000, () => {

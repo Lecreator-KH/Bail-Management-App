@@ -12,14 +12,15 @@ CREATE TABLE peopleOnBail(
     offense VARCHAR(255),
     longitude VARCHAR(255),
     latitude VARCHAR(255),
-    linkToPhoto VARCHAR(255)
+    photoLink VARCHAR(255),
+    groupMember VARCHAR(255),
+    isActive BOOLEAN
 );
 
 CREATE TABLE bailChecks(
     check_id SERIAL PRIMARY KEY,
-    officerName VARCHAR(255) references users(user_id),
-    personOnBailName VARCHAR(255) references peopleOnBail(user_id),
+    officerID BIGINT references users(user_id),
+    personOnBailID BIGINT references peopleOnBail(user_id),
     checkTime BIGINT,
-    personPresent BOOLEAN,
-    comments VARCHAR(255)
+    personPresent BOOLEAN
 );

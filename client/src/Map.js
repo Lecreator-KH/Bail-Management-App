@@ -33,12 +33,22 @@ export default function App(userID) {
   const [officerID, setOfficerID] = useState(userID.user);
   const [personWasThere, setPersonWasThere] = useState("");
   const [peopleOnBail, setPeopleOnBail] = useState(null);
+  const [colorYes,setColorYes]=useState('white');
+  const [colorNo,setColorNo]=useState('white');
+  const [yesClicked, setYesClicked] = useState(false)
+  const [submitDisabled, setSubmitDisabled] = useState(true)
+  const [width, setWidth] = useState(window.innerWidth);
 
+  const isMobile = width <= 768;
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
   const getPeopleOnBail = () => {
     axios({
       method: "GET",
       withCredentials: true,
-      url: "http://localhost:5000/getPersonsOnBail",
+      url: "http://192.168.1.151:5000/getPersonsOnBail",
     })
       .then((res) => {
         setPeopleOnBail(res.data);
@@ -50,7 +60,7 @@ export default function App(userID) {
     axios({
       method: "GET",
       withCredentials: true,
-      url: "http://localhost:5000/getUser",
+      url: "http://192.168.1.151:5000/getUser",
     })
       .then((res) => {
         setUserData(res.data.username);
@@ -72,7 +82,7 @@ export default function App(userID) {
           personpresent: personWasThere,
         },
         withCredentials: true,
-        url: "http://localhost:5000/logCheck",
+        url: "http://192.168.1.151:5000/logCheck",
       })
         .then((res) => console.log(res))
         .catch((e) => console.error(e));
@@ -81,7 +91,11 @@ export default function App(userID) {
   };
 
   function closeNav() {
-    document.getElementById("mySidepanel").style.width = "0";
+    if(isMobile){
+      document.getElementById("mySidepanel").style.height = "0";
+    }else{
+      document.getElementById("mySidepanel").style.width = "0";
+    }    
   }
 
   useEffect(() => {
@@ -89,6 +103,7 @@ export default function App(userID) {
   }, []);
 
   useEffect(() => {
+
     getUser();
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -108,7 +123,16 @@ export default function App(userID) {
             setOffense(data.offense);
             changeImage(data.photolink);
             setOffenderId(data.user_id);
-            document.getElementById("mySidepanel").style.width = "400px";
+
+            setPersonWasThere("")
+            setColorYes('white')
+            setColorNo('white')
+            setSubmitDisabled(true)
+            if(isMobile){
+              document.getElementById("mySidepanel").style.height = "100vh";
+            }else{
+              document.getElementById("mySidepanel").style.width = "25vw";
+            }            
           });
         } else {
           const marker = new mapboxgl.Marker({ color: "green" })
@@ -120,10 +144,23 @@ export default function App(userID) {
             setOffense(data.offense);
             changeImage(data.photolink);
             setOffenderId(data.user_id);
-            document.getElementById("mySidepanel").style.width = "400px";
+
+            setPersonWasThere("")
+            setColorYes('white')
+            setColorNo('white')
+            setSubmitDisabled(true)
+            if(isMobile){
+              document.getElementById("mySidepanel").style.height = "100vh";
+            }else{
+              document.getElementById("mySidepanel").style.width = "25vw";
+            } 
           });
         }
       });
+    }
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+        window.removeEventListener('resize', handleWindowSizeChange);
     }
   }, [peopleOnBail]);
 
@@ -139,17 +176,27 @@ export default function App(userID) {
             &times;
           </a>
           <a id="title" href="#">
-            Persn On Bail
+            PERSON ON BAIL
           </a>
           <a href="#">Name: {name}</a>
           <a href="#">Offense: {offense}</a>
-          <img src={images[mugshot]} alt="mugshot" />
+          <img id="mugshot" className="rounded" src={images[mugshot]} alt="mugshot" />
           <br />
           <a href="#">Was {name} present?</a>
-          <button onClick={() => setPersonWasThere("Yes")}>Yes</button>
-          <button onClick={() => setPersonWasThere("No")}>No</button>
+          <button className="btn m-2 btn-light" style={{background:colorYes}} onClick={() => {
+            setPersonWasThere("Yes")
+            setColorYes('green')
+            setColorNo('white')
+            setSubmitDisabled(false)
+            }}>Yes</button>
+          <button className="btn m-2  btn-light" style={{background:colorNo}} onClick={() => {
+            setPersonWasThere("No")
+            setColorNo('green')
+            setColorYes('white')
+            setSubmitDisabled(false)
+          }}>No</button>
           <br />
-          <button onClick={logCheck}>Submit</button>
+          <button disabled={submitDisabled} className="btn m-2 btn-light" onClick={logCheck}>Submit</button>
         </div>
       ) : null}
     </div>

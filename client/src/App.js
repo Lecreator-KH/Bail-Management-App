@@ -33,7 +33,7 @@ function App() {
         password: loginPassword,
       },
       withCredentials: true,
-      url: "http://localhost:5000/login",
+      url: "http://192.168.1.151:5000/login",
     })
       .then((res) => {
         if(res.data.success == "true"){
@@ -51,7 +51,7 @@ function App() {
     axios({
       method: "GET",
       withCredentials: true,
-      url: "http://localhost:5000/getUser",
+      url: "http://192.168.1.151:5000/getUser",
     })
       .then((res) => {
         setData(res.data.username);
@@ -80,18 +80,28 @@ function App() {
         data ? 
         //<h1>Welcome Back {data}</h1> 
         <Map user={userID}/>
+        
         :       
         <div>
-          <h1>Login</h1>
-          <input
-            placeholder="username"
-            onChange={(e) => setLoginUsername(e.target.value)}
-          />
-          <input
-            placeholder="password"
-            onChange={(e) => setLoginPassword(e.target.value)}
-          />
-          <button onClick={login}>Submit</button>
+          <div className="row d-flex justify-content-center p-3">
+            <h1>Login</h1>
+            <input
+              placeholder="username"
+              className="form-control w-25 m-2"
+              onChange={(e) => setLoginUsername(e.target.value)}
+            />
+            <input
+              className="form-control w-25 m-2"
+
+              placeholder="password"
+              onChange={(e) => setLoginPassword(e.target.value)}
+            />
+
+          </div>
+          <button           
+              className="btn btn-dark btn-lg"
+              onClick={login}>Submit
+            </button>
         </div>
       }
     </div>

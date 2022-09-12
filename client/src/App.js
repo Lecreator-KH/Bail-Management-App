@@ -92,7 +92,7 @@ function App() {
             />
             <input
               className="form-control w-25 m-2"
-
+              type="password"
               placeholder="password"
               onChange={(e) => setLoginPassword(e.target.value)}
             />

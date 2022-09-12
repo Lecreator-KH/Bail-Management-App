@@ -23,7 +23,7 @@ export default function App(userID) {
   const map = useRef(null);
   const [lng, setLng] = useState(175.2878457402682);
   const [lat, setLat] = useState(-37.79309033810983);
-  const [zoom, setZoom] = useState(16);
+  const [zoom, setZoom] = useState(14);
   const [sidePanel, setSidePanel] = useState(false);
   const [offense, setOffense] = useState("");
   const [name, setName] = useState("");
@@ -185,13 +185,13 @@ export default function App(userID) {
           <a href="#">Was {name} present?</a>
           <button className="btn m-2 btn-light" style={{background:colorYes}} onClick={() => {
             setPersonWasThere("Yes")
-            setColorYes('green')
+            setColorYes('blue')
             setColorNo('white')
             setSubmitDisabled(false)
             }}>Yes</button>
-          <button className="btn m-2  btn-light" style={{background:colorNo}} onClick={() => {
+          <button className="btn m-2 btn-light" style={{background:colorNo}} onClick={() => {
             setPersonWasThere("No")
-            setColorNo('green')
+            setColorNo('blue')
             setColorYes('white')
             setSubmitDisabled(false)
           }}>No</button>

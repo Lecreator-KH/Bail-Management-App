@@ -8,6 +8,9 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const pool = require("./db");
 const bodyParser = require("body-parser");
+const path = require("path")
+const PORT = process.env.port || 5000
+//process.env.PORT
 
 const app = express();
 
@@ -16,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://192.168.1.151:3000",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -32,6 +35,10 @@ app.use(cookieParser("secretcode"));
 app.use(passport.initialize());
 app.use(passport.session());
 require("./passportConfig")(passport);
+
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname, "client/build")))
+}
 
 //--------------------------------------ROUTES-----------------------------------------------------------------------
 

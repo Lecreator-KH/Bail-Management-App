@@ -45,10 +45,11 @@ export default function App(userID) {
     setWidth(window.innerWidth);
   }
   const getPeopleOnBail = () => {
+
     axios({
       method: "GET",
       withCredentials: true,
-      url: "http://192.168.1.151:5000/getPersonsOnBail",
+      url: "/getPersonsOnBail",
     })
       .then((res) => {
         setPeopleOnBail(res.data);
@@ -60,7 +61,7 @@ export default function App(userID) {
     axios({
       method: "GET",
       withCredentials: true,
-      url: "http://192.168.1.151:5000/getUser",
+      url: "/getUser",
     })
       .then((res) => {
         setUserData(res.data.username);
@@ -82,7 +83,7 @@ export default function App(userID) {
           personpresent: personWasThere,
         },
         withCredentials: true,
-        url: "http://192.168.1.151:5000/logCheck",
+        url: "/logCheck",
       })
         .then((res) => console.log(res))
         .catch((e) => console.error(e));

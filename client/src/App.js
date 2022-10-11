@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import Map from './Map'
+import Admin from './Admin'
 
 function App() {
   const [registerUsername, setRegisterUsername] = useState("");
@@ -59,7 +60,7 @@ function App() {
       .catch((e) => console.error(e));
   };
   useEffect(() => {
-    getUser();
+    // getUser();
   }, []);
 
   return (
@@ -67,7 +68,7 @@ function App() {
 
       {
         data ? 
-        <Map user={userID}/>
+        <Admin user={userID}/>
         
         :       
       <div>
@@ -103,9 +104,9 @@ function App() {
 
           </div>
           <button           
-              className="btn btn-dark btn-lg"
-              onClick={login}>Submit
-            </button>
+            className="btn btn-dark btn-lg"
+            onClick={login}>Submit
+          </button>
         </div>
       </div>
 

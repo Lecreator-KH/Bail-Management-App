@@ -1,4 +1,7 @@
 const postgres = require("postgres");
+const fs = require('fs');
+const multer = require('multer');
+const csv = require('fast-csv');
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
@@ -8,11 +11,25 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const pool = require("./db");
 const bodyParser = require("body-parser");
-const path = require("path")
+const path = require("path");
+const { getSystemErrorMap } = require("util");
 const PORT = process.env.port || 5000
 //process.env.PORT
 
 const app = express();
+
+var upload = multer({
+  storage: storage
+});
+
+var storage = multer.diskStorage({
+  destination: (req, file, callBack) => {
+      callBack(null, './uploads/')    
+  },
+  filename: (req, file, callBack) => {
+      callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
 
 //--------------------------------------MIDDLEWARE--------------------------------------------------------------------
 app.use(bodyParser.json());
@@ -86,6 +103,36 @@ app.post("/logCheck", async (req, res) => {
   }
 })
 
+// app.post('/updateDatebase', (req, res) =>{
+//   let stream = fs.createReadStream(req.body.csvFile);
+//   let csvDataArray = [];
+//   let fileStream = csv.parse().on("data", function (data){
+//         csvDataArray.push(data);
+//       })
+//       .on("end", function () {
+//         csvDataArray.shift();
+
+//         fileStream.pause();
+//         const query = "INSERT INTO peopleOnBail(name,offense,longitude,latitude,photoLink,groupMember,isActive) VALUES($1, $2, $3, $4, $5, $6, $7)";
+
+//         try {
+//           csvData.forEach(row => {
+//             pool.query(query, row, (err, res) => {
+//               if (err) {
+//                 console.log(err.stack);
+//               } else {
+//                 console.log("inserted " + res.rowCount + " row:", row);
+//               }
+//             });
+//           });
+//         } finally {
+//           done();
+//         }
+//         fileStream.resume
+//       });
+//   stream.pipe(fileStream);
+// });
+
 app.post("/updateDatebase", async (req, res) => {
   try{
     await pool.query(
@@ -93,6 +140,15 @@ app.post("/updateDatebase", async (req, res) => {
       [req.body.name, req.body.offense, req.body.longitude, req.body.latitude, req.body.photoLink, req.body.groupMember, req.body.isActive]
     );
     res.send("Log added");
+  }catch(err){
+    console.error(err.Message)
+  }
+})
+
+app.post("/resetDatebase", async (req, res) => {
+  try{
+    await pool.query(`TRUNCATE peopleOnBail`);
+    res.send("Reset database");
   }catch(err){
     console.error(err.Message)
   }

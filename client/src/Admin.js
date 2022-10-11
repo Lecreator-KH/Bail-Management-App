@@ -35,12 +35,51 @@ function Admin() {
         const reader = new FileReader();
         
         reader.onload = async ({ target }) => {
-            const csv = Papa.parse(target.result, { header: true });
-            setParsedData(csv);
+            const csv = Papa.parse(target.result, { header: false });
+            const tempData = csv?.data;
+            setParsedData(tempData);
         };
         reader.readAsText(file);
-        console.log(parsedData);
 
+        axios({
+            method: "POST",
+            withCredentials: true,
+            url: "/resetDatebase",
+          })
+            .then((res) => console.log(res))
+            .catch((e) => console.error(e));
+        
+        for(let counter = 1; counter < parsedData.length; counter++){
+            axios({
+                method: "POST",
+                data: {
+                    id: parsedData[counter][0],
+                    name: parsedData[counter][1],
+                    offence: parsedData[counter][2],
+                    longitude: parsedData[counter][3],
+                    latitude: parsedData[counter][4],
+                    photoLink: parsedData[counter][5],
+                    groupMember: parsedData[counter][6],
+                    isActive: parsedData[counter][7],
+                },
+                withCredentials: true,
+                url: "/updateDatebase",
+              })
+                .then((res) => console.log(res))
+                .catch((e) => console.error(e));
+        }
+
+        // axios({
+        //     method: "POST",
+        //     data: {
+        //       csvFile: file,
+        //     },
+        //     withCredentials: true,
+        //     url: "/updateDatebase",
+        //   })
+        //     .then((res) => console.log(res))
+        //     .catch((e) => console.error(e));
+        // console.log(parsedData[0]);
     };
 
     useEffect(() => {

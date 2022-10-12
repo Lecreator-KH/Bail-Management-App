@@ -1,7 +1,4 @@
 const postgres = require("postgres");
-const fs = require('fs');
-const multer = require('multer');
-const csv = require('fast-csv');
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
@@ -17,19 +14,6 @@ const PORT = process.env.port || 5000
 //process.env.PORT
 
 const app = express();
-
-var upload = multer({
-  storage: storage
-});
-
-var storage = multer.diskStorage({
-  destination: (req, file, callBack) => {
-      callBack(null, './uploads/')    
-  },
-  filename: (req, file, callBack) => {
-      callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
-})
 
 //--------------------------------------MIDDLEWARE--------------------------------------------------------------------
 app.use(bodyParser.json());
@@ -136,8 +120,8 @@ app.post("/logCheck", async (req, res) => {
 app.post("/updateDatebase", async (req, res) => {
   try{
     await pool.query(
-      `INSERT INTO peopleOnBail(name,offense,longitude,latitude,photoLink,groupMember,isActive) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-      [req.body.name, req.body.offense, req.body.longitude, req.body.latitude, req.body.photoLink, req.body.groupMember, req.body.isActive]
+      `INSERT INTO peopleOnBail(user_id,name,offense,longitude,latitude,photoLink,groupMember,isActive) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [req.body.id, req.body.name, req.body.offense, req.body.longitude, req.body.latitude, req.body.photoLink, req.body.groupMember, req.body.isActive]
     );
     res.send("Log added");
   }catch(err){

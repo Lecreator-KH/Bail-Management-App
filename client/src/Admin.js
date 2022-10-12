@@ -9,7 +9,6 @@ function Admin() {
     const [parsedData, setParsedData] = useState([]);
 
     const fileChangeHandler = (e) => {
-         
         // Check if user has entered the file
         if (e.target.files.length) {
             const inputFile = e.target.files[0];
@@ -25,8 +24,28 @@ function Admin() {
         }
     };
 
+    // async function processFile(){
+    //     if (!file) {
+    //         console.log("Enter a valid file");
+    //         return
+    //     }
+
+    //     const reader = new FileReader();
+
+    //     let promise = new Promise((resolve)=>{
+    //         resolve(
+    //         reader.onload = async ({ target }) => {
+    //             const csv = Papa.parse(target.result, { header: false });
+    //             const tempData = csv?.data;
+    //             setParsedData(tempData);
+    //         },
+    //         reader.readAsText(file))
+    //         console.log(parsedData);
+    //     })
+    //     let result = await promise;
+    // }
+
     const upload = () => {
-        // console.log("Test");
         if (!file) {
             console.log("Enter a valid file");
             return
@@ -40,7 +59,9 @@ function Admin() {
             setParsedData(tempData);
         };
         reader.readAsText(file);
-
+    };
+    
+    const updateDatabase = () => {
         axios({
             method: "POST",
             withCredentials: true,
@@ -53,7 +74,7 @@ function Admin() {
             axios({
                 method: "POST",
                 data: {
-                    id: parsedData[counter][0],
+                    id: parseInt(parsedData[counter][0]),
                     name: parsedData[counter][1],
                     offence: parsedData[counter][2],
                     longitude: parsedData[counter][3],
@@ -68,23 +89,11 @@ function Admin() {
                 .then((res) => console.log(res))
                 .catch((e) => console.error(e));
         }
-
-        // axios({
-        //     method: "POST",
-        //     data: {
-        //       csvFile: file,
-        //     },
-        //     withCredentials: true,
-        //     url: "/updateDatebase",
-        //   })
-        //     .then((res) => console.log(res))
-        //     .catch((e) => console.error(e));
-        // console.log(parsedData[0]);
-    };
+    }
 
     useEffect(() => {
-        // getUser();
-      }, []);
+        updateDatabase();
+      }, [parsedData]);
     
     return (
         <div>

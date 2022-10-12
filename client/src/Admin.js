@@ -7,6 +7,11 @@ function Admin() {
     const allowedExtensions = ["csv"];
     const [file, setFile] = useState("");
     const [parsedData, setParsedData] = useState([]);
+    const [updateDb, setUpdateDb] = useState(false);
+    const [registerPage, setRegisterPage] = useState(false);
+    const [registerUsername, setRegisterUsername] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
+    const [registerAdmin, setRegisterAdmin] = useState(false);
 
     const fileChangeHandler = (e) => {
         // Check if user has entered the file
@@ -24,27 +29,6 @@ function Admin() {
         }
     };
 
-    // async function processFile(){
-    //     if (!file) {
-    //         console.log("Enter a valid file");
-    //         return
-    //     }
-
-    //     const reader = new FileReader();
-
-    //     let promise = new Promise((resolve)=>{
-    //         resolve(
-    //         reader.onload = async ({ target }) => {
-    //             const csv = Papa.parse(target.result, { header: false });
-    //             const tempData = csv?.data;
-    //             setParsedData(tempData);
-    //         },
-    //         reader.readAsText(file))
-    //         console.log(parsedData);
-    //     })
-    //     let result = await promise;
-    // }
-
     const upload = () => {
         if (!file) {
             console.log("Enter a valid file");
@@ -59,8 +43,12 @@ function Admin() {
             setParsedData(tempData);
         };
         reader.readAsText(file);
+
+        setUpdateDb(true);
     };
-    
+    /*
+        updateDatabase: 
+    */
     const updateDatabase = () => {
         axios({
             method: "POST",
@@ -91,10 +79,65 @@ function Admin() {
         }
     }
 
+    const registerUser = () => {
+        setRegisterPage(true);
+        console.log("Register Page");
+    }
+
+    const backRegisterUser = () => {
+        setRegisterPage(false);
+        console.log("Admin Page");
+    }
+
+    const register = () => {
+        axios({
+            method: "POST",
+            data: {
+                username: registerUsername,
+                password: registerPassword,
+                admin: registerAdmin,
+            },
+            withCredentials: true,
+            url: "/register",
+        })
+            .then((res) => console.log(res))
+            .catch((e) => console.error(e));
+    };
+
     useEffect(() => {
-        updateDatabase();
-      }, [parsedData]);
-    
+        if(updateDb) {
+            updateDatabase();
+            setUpdateDb(false);
+        }
+    }, [parsedData]);
+
+    if (registerPage)
+    {
+        return (
+            <div className="Register">
+                <div className="row d-flex justify-content-center p-3">
+                    <h1>Register</h1>
+                    <input
+                        placeholder="username"
+                        className="form-control w-25 m-2"
+                        onChange={(e) => setRegisterUsername(e.target.value)}
+                    />
+                    <input
+                        placeholder="password"
+                        className="form-control w-25 m-2"
+                        onChange={(e) => setRegisterPassword(e.target.value)}
+                    />
+                    <label for="isAdmin"> Admin </label>
+                    <input
+                        type="checkbox"
+                        name="isAdmin"
+                    />
+                </div>
+                <button className="btn btn-dark btn-lg" onClick={register}>Submit</button>
+                <button type="button" onClick={backRegisterUser}> Go back</button>
+            </div>
+        )
+    }
     return (
         <div>
             <div className="AdminContainer">
@@ -110,7 +153,7 @@ function Admin() {
                     <button type="button" onClick={upload}> Update database</button>
                 </div>
                 <div className="Register">
-                    <button type="button"> Register New User</button>
+                    <button type="button" onClick={registerUser}> Register New User</button>
                 </div>
             </div>
         </div>

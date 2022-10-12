@@ -12,19 +12,19 @@ function App() {
   const [data, setData] = useState(null);
   const [userID, setUserID] = useState(null)
 
-  const register = () => {
-    axios({
-      method: "POST",
-      data: {
-        username: registerUsername,
-        password: registerPassword,
-      },
-      withCredentials: true,
-      url: "/register",
-    })
-      .then((res) => console.log(res))
-      .catch((e) => console.error(e));
-  };
+  // const register = () => {
+  //   axios({
+  //     method: "POST",
+  //     data: {
+  //       username: registerUsername,
+  //       password: registerPassword,
+  //     },
+  //     withCredentials: true,
+  //     url: "/register",
+  //   })
+  //     .then((res) => console.log(res))
+  //     .catch((e) => console.error(e));
+  // };
 
   const login = () => {
     axios({
@@ -72,7 +72,7 @@ function App() {
         
         :       
       <div>
-        <div className="row d-flex justify-content-center p-3">
+        {/* <div className="row d-flex justify-content-center p-3">
             <h1>Register</h1>
             <input
               placeholder="username"
@@ -85,7 +85,7 @@ function App() {
               onChange={(e) => setRegisterPassword(e.target.value)}
             />
         </div> 
-        <button className="btn btn-dark btn-lg" onClick={register}>Submit</button>
+        <button className="btn btn-dark btn-lg" onClick={register}>Submit</button> */}
 
         <div>
           <div className="row d-flex justify-content-center p-3">

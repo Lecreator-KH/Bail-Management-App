@@ -86,37 +86,9 @@ app.post("/logCheck", async (req, res) => {
     console.error(err.Message)
   }
 })
-
-// app.post('/updateDatebase', (req, res) =>{
-//   let stream = fs.createReadStream(req.body.csvFile);
-//   let csvDataArray = [];
-//   let fileStream = csv.parse().on("data", function (data){
-//         csvDataArray.push(data);
-//       })
-//       .on("end", function () {
-//         csvDataArray.shift();
-
-//         fileStream.pause();
-//         const query = "INSERT INTO peopleOnBail(name,offense,longitude,latitude,photoLink,groupMember,isActive) VALUES($1, $2, $3, $4, $5, $6, $7)";
-
-//         try {
-//           csvData.forEach(row => {
-//             pool.query(query, row, (err, res) => {
-//               if (err) {
-//                 console.log(err.stack);
-//               } else {
-//                 console.log("inserted " + res.rowCount + " row:", row);
-//               }
-//             });
-//           });
-//         } finally {
-//           done();
-//         }
-//         fileStream.resume
-//       });
-//   stream.pipe(fileStream);
-// });
-
+/*
+  /updateDatabase : 
+*/
 app.post("/updateDatebase", async (req, res) => {
   try{
     await pool.query(

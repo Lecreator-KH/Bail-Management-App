@@ -64,8 +64,8 @@ app.post("/register", async (req, res) => {
     if (user.rows.length == 0) {
       const passwordHashed = await bcrypt.hash(req.body.password, 10);
       await pool.query(
-        `INSERT INTO users(userName,passwordHash) VALUES($1,$2)`,
-        [req.body.username, passwordHashed]
+        `INSERT INTO users(userName,passwordHash,adminAccess) VALUES($1,$2,$3)`,
+        [req.body.username, passwordHashed, req.body.admin]
       );
       res.send("User Created");
     } else {
@@ -87,9 +87,10 @@ app.post("/logCheck", async (req, res) => {
   }
 })
 /*
-  /updateDatabase : 
+  /updatePOBDatabase : Insert new record into the database
+  Takes all required fields of the Person on Bail
 */
-app.post("/updateDatebase", async (req, res) => {
+app.post("/updatePOBDatebase", async (req, res) => {
   try{
     await pool.query(
       `INSERT INTO peopleOnBail(user_id,name,offense,longitude,latitude,photoLink,groupMember,isActive) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,

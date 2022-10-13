@@ -13,6 +13,11 @@ function Admin() {
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerAdmin, setRegisterAdmin] = useState(false);
 
+    /*
+        fileChangeHandler: Accept any csv files.
+        Future Implementations
+        - Allow for different file type like json
+    */
     const fileChangeHandler = (e) => {
         // Check if user has entered the file
         if (e.target.files.length) {
@@ -29,7 +34,13 @@ function Admin() {
         }
     };
 
+    /*
+        upload: Upload the csv file to the server. The server will retrieve the information which
+        will be parsed to the database server.
+    */
     const upload = () => {
+        // Check if a valid file have been selected
+        // Give user a warning if a valid file has not been selected
         if (!file) {
             console.log("Enter a valid file");
             return
@@ -47,9 +58,10 @@ function Admin() {
         setUpdateDb(true);
     };
     /*
-        updateDatabase: 
+        updateDatabase: sends a request to the server to insert the new records of people on bail to the database.
     */
-    const updateDatabase = () => {
+    const updatePOBDatabase = () => {
+        // Reset the people on bail table
         axios({
             method: "POST",
             withCredentials: true,
@@ -57,7 +69,10 @@ function Admin() {
           })
             .then((res) => console.log(res))
             .catch((e) => console.error(e));
-        
+
+        // Send a request for each record in the file receive from the user.
+        // Future Implementations
+        // Use fast-csv instead of sending one by one
         for(let counter = 1; counter < parsedData.length; counter++){
             axios({
                 method: "POST",
@@ -72,24 +87,42 @@ function Admin() {
                     isActive: parsedData[counter][7],
                 },
                 withCredentials: true,
-                url: "/updateDatebase",
+                url: "/updatePOBDatebase",
               })
                 .then((res) => console.log(res))
                 .catch((e) => console.error(e));
         }
     }
 
+    /*
+        registerUser: Change to the registration page
+    */
     const registerUser = () => {
         setRegisterPage(true);
         console.log("Register Page");
     }
 
+    /*
+        registerUser: Change to the admin page
+    */
     const backRegisterUser = () => {
         setRegisterPage(false);
         console.log("Admin Page");
     }
 
+    /*
+        adminChange: Check if the value of the isAdmin checkbox has been changed
+        If so update accordingly
+    */
+    const adminChange = event => {
+        setRegisterAdmin(current => !current);
+    };
+
+    /*
+        register: A new user is added, send a request to insert the record to the user database
+    */
     const register = () => {
+        // if 
         axios({
             method: "POST",
             data: {
@@ -104,12 +137,16 @@ function Admin() {
             .catch((e) => console.error(e));
     };
 
+    // Wait for the file to be process before sending the request to insert the new POB records
     useEffect(() => {
         if(updateDb) {
-            updateDatabase();
+            updatePOBDatabase();
             setUpdateDb(false);
         }
     }, [parsedData]);
+
+    // Update the registerAdmin state when the isAdmin checkbox is clicked
+    useEffect(() => {console.log(registerAdmin)}, [registerAdmin]);
 
     if (registerPage)
     {
@@ -131,6 +168,8 @@ function Admin() {
                     <input
                         type="checkbox"
                         name="isAdmin"
+                        value={setRegisterAdmin}
+                        onChange={adminChange}
                     />
                 </div>
                 <button className="btn btn-dark btn-lg" onClick={register}>Submit</button>
